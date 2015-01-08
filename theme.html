@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <title>
+      {% if is_login %}Login
+      {% elif is_home %}{{ site.author }}
+      {% elif is_tag %}{{ tag }}
+      {% elif post %}{{ post.title }}
+      {% endif %}
+      | {{ site.name }}
+    </title>
+
+    {{ header_meta }}
+
+    <link href="{{ assets('css/style.css') }}" rel="stylesheet">
+    <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js" /></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Raleway:100,200,300,400', 'Volkorn']
+        }
+    });
+    </script>
+
+    {% if site.analytics %}
+    <script>
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', '{{ site.analytics }}']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    {% endif %}
+  </head>
+  <body>
+
+    {% if is_login %}
+
+      {{ login_form }}
+
+    {% else %}
+    <div class="site-header">
+        <div class="container">
+            <div class="row">
+                <div class="sixteen columns">
+                    <h1 class="site-title">
+                        <a href="/">{{ site.name }}</a>
+                    </h1>
+                    <div class="site-avatar">
+                        <img src="{{ site.avatar }}" alt="{{ site.author }}" />
+                    </div>
+                    <p class="site-bio">{{ site.bio }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="fourteen columns offset-by-two">
+                {% if pages %}
+                <nav class="site-nav">
+                    <ul class="nav-menu">
+                        <li><a href="{{ site.base_url }}">Blog</a></li>
+                        {% for page in pages %}
+                        <li><a href="{{ page.permalink }}" class="{{ set_active(page.permalink) }}">{{ page.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+                {% endif %}
+                <div class="site-content">
+                {% if is_home or is_tag %}
+                    {% if is_tag %}
+                    <h2 class="tag-header">Showing all posts tagged {{ tag }}:</h2>
+                    {% endif %}
+
+                    {% if posts %}
+                    <section itemscope itemtype="http://schema.org/Blog" class="blog-feed">
+                    {% for post in posts %}
+                        <article itemprop="blogPosts" itemscope itemtype="http://schema.org/BlogPosting" class="blog-post feed-item">
+                            <header class="post-header">
+                                <h2 class="post-title">
+                                    <a href="{{ post.permalink }}">{{ post.title }}</a>
+                                </h2>
+                                <div class="post-metadata">
+                                    <div class="left">
+                                        <p class="post-byline">Posted by {{ site.author }} on <time datetime="{{ post.created_at }}" class="post-date">{{ post.created_at|date_format }}</time></p>
+                                    </div>
+                                    <div class="right">
+                                        {% if post.tags %}
+                                        <div class="post-tags">
+                                            Filed under: {{ post.tags|format_tags(humanize=True) }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </header>
+                            <div class="post-body">
+                                <div class="post-content" data-type-cleanup="true">
+                                    {{ post.content }}
+                                    {% if post.type == 'link' or post.type == 'webclip' %}
+                                    <span class="post-link-url"><i class="icon-share"></i> <a href="{{ post.url }}" target="_blank">{{ post.url }}</a></span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                    </section>
+                    {% else %}
+                    <div class="blog-feed">
+                        <h2 class="title"><em>No posts yet :(</em></h2>
+                    </div>
+                    {% endif %}
+                    {% if not is_tag and posts %}
+                    {% if pagination.next or pagination.prev %}
+                    <div class="blog-pagination">
+                        {% if pagination.prev %}<a href="{{ pagination.prev }}" title="Newer Posts" class="pagination-newer">&larr; Newer Posts</a>{% endif %}
+                        {% if pagination.next %}<a href="{{ pagination.next }}" title="Previous Posts" class="pagination-older">Previous Posts &rarr;</a>{% endif %}
+                    </div>
+                    {% endif %}
+                    {% endif %}
+
+                {% elif post.type == 'post' %}
+
+                    <article itemscope itemtype="http://schema.org/BlogPosting" class="blog-post post-single">
+                        <section class="post-body">
+                            <header class="post-header">
+                                <div class="header-top">
+                                    <h1 class="post-title">{{ post.title }}</h1>
+                                </div>
+                                <div class="post-metadata">
+                                    <p class="post-byline left">Posted by {{ site.author }} on <time datetime="{{ post.created_at }}" class="post-date">{{ post.created_at|date_format }}</time></p>
+                                    {% if post.tags %}
+                                    <div class="post-tags right">
+                                        Filed under: {{ post.tags|format_tags(humanize=True) }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </header>
+                            <div class="post-content" data-type-cleanup="true">
+                              {{ post.content }}
+                            </div>
+                            <div class="post-socialbar">
+                              {{ theme.social.bar }}
+                            </div>
+                        </section>
+                        {% if site.disqus %}
+                        <section class="comments">
+                            <hr class="large" />
+                            <div id="disqus_thread"></div>
+                            <script type="text/javascript">
+                            var disqus_shortname = '{{ site.disqus }}';
+                            (function() {
+                                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                            })();
+                            </script>
+                            <noscript>
+                                Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+                            </noscript>
+                            <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+                        </section>
+                        {% endif %}
+                    </article>
+
+                {% elif post.type == 'link' %}
+
+                    <article itemscope itemtype="http://schema.org/BlogPosting" class="blog-post post-single">
+                        <section class="post-body">
+                            <header class="post-header">
+                                <div class="header-top">
+                                    <h1 class="post-title">{{ link.title }}</h1>
+                                </div>
+                                <div class="post-metadata">
+                                    <p class="post-byline left">Posted by {{ site.author }} on <time datetime="{{ link.created_at }}" class="post-date">{{ link.created_at|date_format }}</time></p>
+                                    {% if link.tags %}
+                                    <div class="post-tags right">
+                                        Filed under: {{ link.tags|format_tags(humanize=True) }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </header>
+                            <div class="post-content" data-type-cleanup="true">
+                                {{ link.content }}
+                                <p><i class="icon-share"></i> <a href="{{ link.url }}">{{ link.url }}</a></p>
+                            </div>
+                            <div class="post-socialbar">
+                              {{ theme.social.bar }}
+                            </div>
+                        </section>
+                        {% if site.disqus %}
+                        <section class="comments">
+                            <hr class="large" />
+                            <div id="disqus_thread"></div>
+                            <script type="text/javascript">
+                            var disqus_shortname = '{{ site.disqus }}';
+                            (function() {
+                                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                            })();
+                            </script>
+                            <noscript>
+                                Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+                            </noscript>
+                            <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+                        </section>
+                        {% endif %}
+                    </article>
+
+                {% elif post.type == 'page' %}
+
+                    <div class="blog-page">
+                        <h1 class="page-title">{{ page.title }}</h1>
+                        <div class="page-content">
+                            {{ page.content }}
+                        </div>
+                    </div>
+
+                {% endif %}
+                </div>
+                <div class="site-footer">
+                    <ul class="social-links">
+                        {% if site.twitter %}
+                        <li>
+                            <a href="{{ site.twitter }}" title="Twitter" target="_blank">
+                                <i class="icon-twitter"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% if site.facebook %}
+                        <li>
+                            <a href="{{ site.facebook }}" title="Facebook" target="_blank">
+                                <i class="icon-facebook"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% if site.googleplus %}
+                        <li>
+                            <a href="{{ site.googleplus }}?rel=author" title="Google+" target="_blank">
+                                <i class="icon-google-plus"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% if site.linkedin %}
+                        <li>
+                            <a href="{{ site.linkedin }}" title="LinkedIn" target="_blank">
+                                <i class="icon-linkedin"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a href="{{ site.atom_url }}" title="RSS" target="_blank">
+                                <i class="icon-rss"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <p>All rights Reserved &copy; <a href="/">{{ site.name }}</a>. Powered by <a href="http://postach.io/">Postach.io</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+
+    {{ footer_meta }}
+
+  </body>
+</html>

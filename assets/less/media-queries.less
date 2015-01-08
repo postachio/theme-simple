@@ -1,0 +1,126 @@
+/*
+ *  Greater than 1200px width
+ */
+@media screen and (min-width: 75em) {
+
+}
+
+/*
+ *  Less than 959px width
+ */
+@media screen and (max-width: 59.9375em) {
+    body {
+        .font-size(13px);
+    }
+
+    /* Header */
+    .site-header {
+        .padding((@bodyPadding / 2) 0 0);
+        .text-center();
+        h1 {
+            .font-size(26px);
+            .padding(0 0 (@bodyPadding / 2));
+        }
+        .site-avatar {
+            .avatar(64px);
+            .margin-bottom(@bodyPadding / 2);
+        }
+        .site-bio {
+            // .width(320px);
+            width: auto;
+            .padding(0 0 (@bodyPadding / 3));
+        }
+    }
+
+    /* Site nav */
+    .site-nav {
+        .margin((@bodyPadding / 3) 0);
+    }
+
+    .nav-menu {
+        .font-size(14px);
+        > li {
+            .margin((@bodyPadding / 4) 0);
+            > a {
+                .padding(12px (@bodyPadding / 2) 13px);
+            }
+        }
+    }
+
+    /* Footer */
+    .site-footer {
+        .padding((@bodyPadding / 2) 0);
+        .margin-bottom(@bodyPadding / 2);
+    }
+
+
+    /* =================================== */
+
+
+    /* Blog Post (blog feed) */
+    .feed-item {
+        .margin-bottom(@bodyPadding / 2);
+    }
+
+    /* Blog Post (single post) */
+    .post-single {
+        .margin-bottom(@bodyPadding / 2);
+    }
+
+    .post-header,
+    .post-content {
+        .padding(@bodyPadding / 2);
+    }
+
+    .post-header {
+        .text-center();
+    }
+
+    .post-metadata {
+        .left, .right {
+            width: 100%;
+            float: none;
+            .text-center();
+        }
+    }
+
+    .post-title {
+        .font-size(32px);
+    }
+
+
+    /* Page */
+
+    .blog-page {
+        .margin-bottom(@bodyPadding / 2);
+        .padding(@bodyPadding / 2);
+    }
+
+    .page-title {
+        .margin(0 0 (@bodyPadding / 2));
+    }
+}
+
+/*
+ *  Less than 767px width
+ */
+@media screen and (max-width: 47.9375em) {
+    /* Blog Post (blog feed) */
+    .post-header,
+    .post-content {
+        .padding(@bodyPadding / 3);
+    }
+
+    /* Page */
+
+    .blog-page {
+        .padding(@bodyPadding / 3);
+    }
+}
+
+/*
+ *  Less than 479px width
+ */
+@media screen and (max-width: 29.9375em) {
+
+}
